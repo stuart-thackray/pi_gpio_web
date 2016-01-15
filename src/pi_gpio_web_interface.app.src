@@ -1,0 +1,7 @@
+{application, pi_gpio_web_interface, [
+    {description,  "Pi Web GPIO Interface"},
+    {vsn,          "2.3.1"},
+    {applications, [kernel, stdlib]},
+    {registered, []},
+    {mod, {pi_gpio_web_interface_app, []}}
+]}.
