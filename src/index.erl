@@ -112,14 +112,11 @@ event({changed_drop, Pin}) ->
 	DropValue = wf:q( DropName),
 	case DropValue of
 		"not set" ->
-%% 			wf:wire(#add_class{class = "disabled"});
 			wf:disable(ToggleName);
 		"input" ->
-%% 			wf:wire(#remove_class{remove_class = "disabled"});
 			gpio_proc:set_type(Pin, input),
-			wf:disable(ToggleName);
+			wf:enable(ToggleName);
 		"output" ->
-%% 			wf:wire(#add_class{class = "disabled"});
 			gpio_proc:set_type(Pin, output),
 			wf:enable(ToggleName)
 	end;
@@ -163,7 +160,7 @@ wait_for_msg() ->
 loop() ->
 	receive 
 		InputChanged = {input_changed, PinNum, Status} ->
-			error_logger:info_msg("InputChanged:~p", [InputChanged]),
+%% 			error_logger:info_msg("InputChanged:~p", [InputChanged]),
 			set_pin_status(PinNum, Status),
 			wf:flush();
 		_ ->

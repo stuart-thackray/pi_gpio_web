@@ -181,10 +181,10 @@ process_msg({{set_status, PinNum, Status}, Ref, From}, State = #state{cfg = Cfg}
 			State
 	end;
 
-process_msg(IMsg = {gpio_interrupt, PinNum, FailingRising}, 
+process_msg(_IMsg = {gpio_interrupt, PinNum, FailingRising}, 
 	State
   	) ->
-	error_logger:info_msg("GPIO INPUT:~p", [IMsg]),
+%% 	error_logger:info_msg("GPIO INPUT:~p", [IMsg]),
 	Status = case FailingRising of
 				 
 		rising -> 0;
@@ -258,6 +258,11 @@ save_config(Cfg) ->
 
 send_to_web(Msg) ->
   %Fake a context
-  wf_context:init_context(undefined),
+  case catch wf_context:data() of
+	  [] ->
+  		void;
+	  _ ->
+		  wf_context:init_context(undefined)
+  end,
   %%Send Msg
   wf:send_global(input_pins_comet, Msg).
