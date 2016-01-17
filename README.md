@@ -6,15 +6,18 @@ A web based Raspberry Pi interface to control the GPIO Pin(s). Possible uses can
 # Getting running
 
 This program requires has a dependency on erlang which can be pulled using.
-   sudo apt-get -y install erlang 
+
+    sudo apt-get -y install erlang 
 
 Then pull the repo and make
+
     git clone https://github.com/stuart-thackray/pi_gpio_web.git
     make
     make run
 
 Then open up the browser to control the Pi.
-   http://<IP-ADDRESS>:8000/
+
+    http://<IP-ADDRESS>:8000/
 
 # More Info
 The configuration is saved between restarts of the PI; it is automatically saved every 5 minutes; or manually when saved via the GUI button. If this is not desired remove the cfg file using the below
