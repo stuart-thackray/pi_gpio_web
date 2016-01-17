@@ -1,5 +1,7 @@
 /ebin/
-*.DS_Store
+.DS_Store
+*/.DS_Store
+static/.DS_Store
 .project
 *.beam
 *.prefs
@@ -9,4 +11,5 @@ log/*
 *fontawesome*
 *font-awesome*
 */*.DS_Store
-.rebar
+.rebar.config
+static/.DS_Store
