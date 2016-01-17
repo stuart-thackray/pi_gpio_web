@@ -11,5 +11,4 @@ log/*
 *fontawesome*
 *font-awesome*
 */*.DS_Store
-rebar.config
 static/.DS_Store
