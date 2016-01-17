@@ -1,1 +1,12 @@
 /ebin/
+*.DS_Store
+.project
+*.beam
+*.prefs
+deps/*
+gpio.conf
+log/*
+*fontawesome*
+*font-awesome*
+*/*.DS_Store
+.rebar

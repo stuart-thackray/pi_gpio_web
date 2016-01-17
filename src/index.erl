@@ -51,7 +51,13 @@ breadcrumb() ->
 body() ->
 	wait_for_msg(),
 	Header = ?HEADER(
-			[
+			[#button{body = 
+						 [
+						  "<i class=\"icon-save\"></i>",
+						  "Save"
+						  ],
+					 postback = save_cfg
+					}
 			 ],
 			 "fa fa-icon-bar-chart", 
 			 ["GPIO Setup",
@@ -62,14 +68,7 @@ body() ->
 	 ?BOX_WITH_TYPE("fa-danger",
 						 Header,
 						 [
-
-						 get_gpio_status(),
-						 #button{text = "Set 3 on",
-								 postback = {event, on}
-								},
-						 						 #button{text = "Set 3 on",
-								 postback = {event, off}
-								}
+						 get_gpio_status()
 						 ], 
 						 []).
 
@@ -105,6 +104,8 @@ event({event, on}) ->
 	set_pin_status(3, 1);
 event({event, off}) ->
 	set_pin_status(3,0);
+event(save_cfg) ->
+	gpio_proc:save_cfg();
 
 event({changed_drop, Pin}) ->
 	ToggleName = "toggle" ++ integer_to_list(Pin),
@@ -159,7 +160,7 @@ wait_for_msg() ->
 
 loop() ->
 	receive 
-		InputChanged = {input_changed, PinNum, Status} ->
+		_InputChanged = {input_changed, PinNum, Status} ->
 %% 			error_logger:info_msg("InputChanged:~p", [InputChanged]),
 			set_pin_status(PinNum, Status),
 			wf:flush();

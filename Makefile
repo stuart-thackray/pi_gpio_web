@@ -1,6 +1,5 @@
 REBAR:=./rebar
 
-## If rebar.config file doesn't exist, just default to mochiweb backend
 all:
 ifeq ("$(wildcard rebar.config)","")
 	@(echo "No backend specified. Defaulting to inets")
@@ -35,8 +34,8 @@ link-static:
 
 copy-static:
 	(cd static; rm -rf nitrogen; mkdir nitrogen; cp -r ../deps/nitrogen_core/www/* nitrogen)
-	(cd static; cp -r ../deps/bootstrap/dist/js/* js ; cp -r ../deps/bootstrap/dist/css/* css)
-	(cd static; rm -rf fonts ; mkdir fonts ; cp -r ../deps/bootstrap/dist/fonts/* fonts )
+##	(cd static; cp -r ../deps/bootstrap/dist/js/* js ; cp -r ../deps/bootstrap/dist/css/* css)
+##	(cd static; rm -rf fonts ; mkdir fonts ; cp -r ../deps/bootstrap/dist/fonts/* fonts )
 	(cd static; cp -r ../deps/fa/css/* css ; cp -r ../deps/fa/fonts/* fonts)
 	(cd static; rm -rf doc; mkdir doc; cp -r ../deps/nitrogen_core/doc/html/* doc)
 

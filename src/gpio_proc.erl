@@ -12,7 +12,8 @@
 
 -export([init/1,
 		 set_type/2,
-		 set_status/2
+		 set_status/2,
+		 save_cfg/0
 		]).
 
 -export([state/0,
@@ -71,6 +72,10 @@ dict() ->
 		{Ref, Reply} -> Reply
 		after 5000 -> timeout
 	end.
+
+save_cfg() ->
+	?MODULE ! save_cfg,
+	sent.
 
 state() ->
 	?MODULE ! { state,Ref = make_ref(), self()},
