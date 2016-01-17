@@ -5,7 +5,7 @@ A web based Raspberry Pi interface to control the GPIO Pin(s). Possible uses can
 
 # Getting running
 
-This program requires has a dependency on erlang which can be pulled using.
+This program has a dependency on erlang which can be pulled using.
 
     sudo apt-get -y install erlang 
 
@@ -21,13 +21,14 @@ Then open up the browser to control the Pi.
 
 # More Info
 The configuration is saved between restarts of the PI; it is automatically saved every 5 minutes; or manually when saved via the GUI button. If this is not desired remove the cfg file using the below
+
     sudo rm gpio.config
 
 # TODO
 - [ ] Determine if naming the pins would be worthwhile; i.e. doorbell, red led, e.t.c.
 - [ ] Make more todos
 
-# Screensh/Demo
+# Screenshot/Demo
 
 Wire up the pi and have fun
 ![Demo setup of Board]
