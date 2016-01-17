@@ -28,8 +28,8 @@ The configuration is saved between restarts of the PI; it is automatically saved
 
 Wire up the pi and have fun
 ![Demo setup of Board]
-(https://github.com/stuart-thackray/pi_gpio_web/doc/smaller_example_setup.jpg)
+(https://github.com/stuart-thackray/pi_gpio_web/blob/master/doc/smaller_example_setup.jpg)
 
 Control via the web
 ![Screenshot]
-(https://github.com/stuart-thackray/pi_gpio_web/doc/example_web_page.jpg)
+(https://github.com/stuart-thackray/pi_gpio_web/blob/master/doc/example_web_page.jpg)
