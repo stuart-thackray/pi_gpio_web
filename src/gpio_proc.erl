@@ -143,7 +143,7 @@ process_msg({{set_type, PinNum, Type}, Ref, From}, State = #state{cfg = Cfg} ) -
 		{value, Pin = #pin{pin_num = PinNum,
 						   status = Status
 						  }, OtherCfg} ->
-			send_to_web({pin_changed,PinNum, Status, Type}),  
+%% 			send_to_web({pin_changed,PinNum, Status, Type}),  
 			case get(PinNum) of
 				undefined ->
 					ok;
@@ -178,7 +178,7 @@ process_msg({{set_status, PinNum, Status}, Ref, From}, State = #state{cfg = Cfg}
 		Pid when is_pid(Pid) ->
 			case lists:keytake(PinNum, 2, Cfg) of
 				{value, Pin = #pin{type = Type = ?TYPE_OUTPUT}, RestCfg} ->
-					send_to_web({pin_changed,PinNum, Status, Type}),
+%% 					send_to_web({pin_changed,PinNum, Status, Type}),
 					gpio:write(Pid, Status),
 					From ! {Ref, ok},
 					State#state{cfg = [Pin#pin{status = Status}|RestCfg]};
@@ -275,6 +275,6 @@ send_to_web(Msg) ->
 	  _ ->
 		  wf_context:init_context(undefined)
   end,
-  error_logger:info_msg("Msg:~p", [Msg]),
+%%   error_logger:info_msg("Msg:~p", [Msg]),
   %%Send Msg
   wf:send_global(input_pins_comet, Msg).
