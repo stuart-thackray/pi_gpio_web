@@ -18,13 +18,18 @@ render_element(Record) ->
         Postback ->
             wf:wire(Anchor, #event {
                 type=change,
-                validation_group=ID,
+                validation_group=ID,				
                 postback=Postback,
-                handle_invalid=Record#toggle_box.handle_invalid,
-                on_invalid=Record#toggle_box.on_invalid,
+				handle_invalid=Record#toggle_box.handle_invalid,
+				on_invalid=Record#toggle_box.on_invalid,
                 delegate=Record#toggle_box.delegate
             })
     end,
+	
+	case Record#toggle_box.click of
+		undefined -> ignore;
+		ClickActions -> wf:wire(Anchor, #event { type=click, actions=ClickActions })
+	end,
     Text = wf:html_encode(Record#toggle_box.text, Record#toggle_box.html_encode), 
 	Body = [],
     UniversalAttributes = [

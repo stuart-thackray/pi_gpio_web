@@ -113,6 +113,9 @@ event({changed_drop, Pin}) ->
 	DropValue = wf:q( DropName),
 	case DropValue of
 		"not set" ->
+			gpio_proc:set_type(Pin, notset),
+			gpio_proc:set_status(Pin, 0),
+			set_pin_status(Pin, 0),
 			wf:disable(ToggleName);
 		"input" ->
 			gpio_proc:set_type(Pin, input),
@@ -164,6 +167,44 @@ loop() ->
 %% 			error_logger:info_msg("InputChanged:~p", [InputChanged]),
 			set_pin_status(PinNum, Status),
 			wf:flush();
+		_OutputChanged = {pin_changed, GPIOPin, Status, Type} ->
+			error_logger:info_msg("Output Changed:~p", [_OutputChanged]),
+			ToggleName = "toggle" ++ integer_to_list(GPIOPin),
+	
+			DropDownName = "drop_down" ++ integer_to_list(GPIOPin),
+			DropValue = case Type of 
+				output ->
+					wf:enable(ToggleName),
+					"output";
+				input ->
+					wf:enable(ToggleName),
+					"input";
+				_ ->
+					wf:disable(ToggleName),
+					"not set"
+			end,
+	
+			CurrToggleValue = wf:q(ToggleName),
+			CurrDropValue = wf:q( DropDownName),
+			if DropValue == CurrDropValue ->
+				   void;
+			   true ->
+					wf:set(DropDownName, DropValue)
+			end,		   
+			CurVal = case CurrToggleValue of
+				[] ->
+					 1;
+				_ ->
+					0
+			end,
+%% 			error_logger:info_msg("CurVal:~p Status~p", [CurVal, Status]),
+%% 			if CurVal == Status ->
+%% 				   void;
+%% 			   true ->
+%% 				   set_pin_status(GPIOPin,Status)
+%% 			end,
+			wf:flush();
+
 		_ ->
 			ignore
 
@@ -516,10 +557,20 @@ row(Pin) ->
 			  curr_status = Status
 			 } =  
 		pin_info(Pin),
+	Style = case Pin of
+				_ when Pin == 27; Pin == 28
+				  ->
+					"border-bottom: 2px solid black;";
+				_ ->
+					""
+			end,
 %% 	error_logger:info_msg("PinNum:~p Type:~p Status:~p", [GPIOPin, Type, Status]),
-[		#tablecell{ text = io_lib:format("~2..0B", [Pin])},
-		#tablecell{body = PinName},
-		#tablecell{body =
+[		#tablecell{ style = Style, 
+					text = io_lib:format("~2..0B", [Pin])},
+		#tablecell{ style = Style, 
+					body = PinName},
+		#tablecell{ style = Style, 
+					body =
 						case RGEnabled of
 							true ->
 								[
@@ -548,10 +599,24 @@ row(Pin) ->
 								[]
 						end
 				  },
-		#tablecell{body =
+		#tablecell{style = Style, 
+					body =
 				case CBShown of
 					true ->
-						set_pin_status(GPIOPin, Status) ,
+						%% -------------------------------------------------------------
+						%% I want to display it as if button press it shows on
+						%% The status of input component is actually 1 when not pressed
+						%% (So this is a workaround for intialization)
+						%% -------------------------------------------------------------
+						UseStatus = case Type of 
+							input ->
+								if (Status ==1 ) -> 0; 
+								   true -> 1
+								end;
+							_ ->
+								Status
+						end,
+						set_pin_status(GPIOPin, UseStatus) ,
 						[
 							#toggle_box{
 										id = "toggle" ++ integer_to_list(GPIOPin),
@@ -567,7 +632,8 @@ row(Pin) ->
 						[]
 				end
 				},
-		#tablecell{
+		#tablecell{style = Style, 
+					
 					body = [
 							
 							]
@@ -587,7 +653,7 @@ pin_status(PinNum) ->
 
 
 set_pin_status(PinNum, Status) ->
-	error_logger:info_msg("Setting Pin:~p Status:~p", [PinNum, Status]),
+%% 	error_logger:info_msg("Setting Pin:~p Status:~p", [PinNum, Status]),
 	toggle(PinNum, Status).
 
 

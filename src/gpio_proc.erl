@@ -140,7 +140,10 @@ process_msg({{get_pin_status, PinNum}, Ref, From}, State = #state{cfg = Cfg}) ->
 
 process_msg({{set_type, PinNum, Type}, Ref, From}, State = #state{cfg = Cfg} ) ->
 	case lists:keytake(PinNum, 2, Cfg) of
-		{value, Pin = #pin{pin_num = PinNum}, OtherCfg} ->
+		{value, Pin = #pin{pin_num = PinNum,
+						   status = Status
+						  }, OtherCfg} ->
+			send_to_web({pin_changed,PinNum, Status, Type}),  
 			case get(PinNum) of
 				undefined ->
 					ok;
@@ -170,10 +173,12 @@ process_msg({{set_type, PinNum, Type}, Ref, From}, State = #state{cfg = Cfg} ) -
 	end;
 	
 process_msg({{set_status, PinNum, Status}, Ref, From}, State = #state{cfg = Cfg}) ->
+	
 	case get(PinNum) of
 		Pid when is_pid(Pid) ->
 			case lists:keytake(PinNum, 2, Cfg) of
-				{value, Pin = #pin{type = ?TYPE_OUTPUT}, RestCfg} ->
+				{value, Pin = #pin{type = Type = ?TYPE_OUTPUT}, RestCfg} ->
+					send_to_web({pin_changed,PinNum, Status, Type}),
 					gpio:write(Pid, Status),
 					From ! {Ref, ok},
 					State#state{cfg = [Pin#pin{status = Status}|RestCfg]};
@@ -215,7 +220,8 @@ process_msg({state, Ref, From}, State) ->
 
 process_msg({'EXIT', PPid, _},  #state{ ppid =PPid}) ->
 	exit(shutdown);
-process_msg(ExitRec = {'EXIT', _,_}, State) ->
+process_msg(_ExitRec = {'EXIT', _,_}, State) ->
+	
 	State;
 process_msg(_Msg, State) ->
 	State.
@@ -269,5 +275,6 @@ send_to_web(Msg) ->
 	  _ ->
 		  wf_context:init_context(undefined)
   end,
+  error_logger:info_msg("Msg:~p", [Msg]),
   %%Send Msg
   wf:send_global(input_pins_comet, Msg).

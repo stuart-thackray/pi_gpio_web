@@ -36,8 +36,8 @@ copy-static:
 	(cd static; rm -rf nitrogen; mkdir nitrogen; cp -r ../deps/nitrogen_core/www/* nitrogen)
 ##	(cd static; cp -r ../deps/bootstrap/dist/js/* js ; cp -r ../deps/bootstrap/dist/css/* css)
 ##	(cd static; rm -rf fonts ; mkdir fonts ; cp -r ../deps/bootstrap/dist/fonts/* fonts )
-	(cd static; cp -r ../deps/fa/css/* css ; cp -r ../deps/fa/fonts/* fonts)
-	(cd static; rm -rf doc; mkdir doc; cp -r ../deps/nitrogen_core/doc/html/* doc)
+##	(cd static; cp -r ../deps/fa/css/* css ; cp -r ../deps/fa/fonts/* fonts)
+##	(cd static; rm -rf doc; mkdir doc; cp -r ../deps/nitrogen_core/doc/html/* doc)
 
 clean:
 	$(REBAR) clean

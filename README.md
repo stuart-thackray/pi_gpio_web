@@ -5,17 +5,17 @@ A web based Raspberry Pi interface to control the GPIO Pin(s). Possible uses can
 
 # Getting running
 
-This program has a dependency on erlang which can be pulled using.
+This program has a dependency on erlang which can be installed like below; or downloaded From [Erlang Solutions](https://www.erlang-solutions.com/resources/download.html)
 
     sudo apt-get -y install erlang 
 
-Then pull the repo and make
+Then clone the repo and make. The default `make` uses the inet as the webserver you may wish to use a different weberver in such you could use one of the following `make cowboy` | `make inets`| `make mochiweb` | `make webmachine` | `make yaws`
 
     git clone https://github.com/stuart-thackray/pi_gpio_web.git
     make
     make run
 
-Then open up the browser to control the Pi.
+Then open up the browser to control the Pi. (to get your IP address on the Rasberry pi type `ifconfg| grep inet`)
 
     http://<IP-ADDRESS>:8000/
 
@@ -25,8 +25,8 @@ The configuration is saved between restarts of the PI; it is automatically saved
     sudo rm gpio.config
 
 # TODO
-- [ ] Determine if naming the pins would be worthwhile; i.e. doorbell, red led, e.t.c.
-- [ ] Make more todos
+- [ ] Determine if custom naming of the GPIO would be worthwhile; i.e. doorbell, red led, e.t.c.
+
 
 # Screenshot/Demo
 
