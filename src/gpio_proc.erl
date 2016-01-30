@@ -149,7 +149,9 @@ process_msg({{set_type, PinNum, Type}, Ref, From}, State = #state{cfg = Cfg} ) -
 					ok;
 				_OldPid ->
 					erase(PinNum),
-					gpio:stop(_OldPid)
+					gpio:stop(_OldPid),
+					%% Give a little time for the pin to stop before starting a new one.
+					receive 50 -> void end
 			end,
 			case Type of
 				input ->

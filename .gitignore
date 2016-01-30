@@ -1,4 +1,5 @@
 /ebin/
+.DS_Store
 *.DS_Store*
 .project
 static/*
