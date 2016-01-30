@@ -141,7 +141,7 @@ process_msg({{get_pin_status, PinNum}, Ref, From}, State = #state{cfg = Cfg}) ->
 process_msg({{set_type, PinNum, Type}, Ref, From}, State = #state{cfg = Cfg} ) ->
 	case lists:keytake(PinNum, 2, Cfg) of
 		{value, Pin = #pin{pin_num = PinNum,
-						   status = Status
+						   status = _CurStatus
 						  }, OtherCfg} ->
 %% 			send_to_web({pin_changed,PinNum, Status, Type}),  
 			case get(PinNum) of
