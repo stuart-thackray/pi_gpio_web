@@ -5,9 +5,6 @@
 
 -compile(export_all).
 
-
--import(utils, [percent_to_colour/1]).
-
 main() -> #template { file="./templates/basic.html" }.
 
 title() -> "GPIO setup".
@@ -84,8 +81,8 @@ get_gpio_status() ->
 					 #tableheader{text = "Name"} ,
 					 #tableheader{text = "Type"} ,
 					 #tableheader{text = "Value"} ,
-					 #tableheader{text = ""}	 ,
-					 #tableheader{text = ""}	,
+					 #tableheader{text = "Custom"}	 ,
+					 #tableheader{text = "Custom"}	,
 					 #tableheader{text = "Value"} ,
 					 #tableheader{text = "Type"} ,
 					 #tableheader{text = "Name"} ,
@@ -184,19 +181,19 @@ loop() ->
 					"not set"
 			end,
 	
-			CurrToggleValue = wf:q(ToggleName),
+%% 			CurrToggleValue = wf:q(ToggleName),
 			CurrDropValue = wf:q( DropDownName),
 			if DropValue == CurrDropValue ->
 				   void;
 			   true ->
 					wf:set(DropDownName, DropValue)
 			end,		   
-			CurVal = case CurrToggleValue of
-				[] ->
-					 1;
-				_ ->
-					0
-			end,
+%% 				CurVal = case CurrToggleValue of
+%% 					[] ->
+%% 						 1;
+%% 					_ ->
+%% 						0
+%% 				end,
 %% 			error_logger:info_msg("CurVal:~p Status~p", [CurVal, Status]),
 %% 			if CurVal == Status ->
 %% 				   void;
@@ -251,7 +248,8 @@ create_tuple_list([E|Tail], [First|Rest]) ->
 			  set_type  = none,
 			  status = 0, 
 				   cb_shown			= false,
-				   curr_status = 0
+				   curr_status = 0,
+				   custom_name = ""
   				  }).
 
 
@@ -267,280 +265,306 @@ pin_info(2) ->
 			  name = "5V <small>DC Power</small>"
 			 };
 pin_info(3) ->
-	{Type, Status} = pin_status(2),
+	{Type, Status, T} = pin_status(2),
 	#pin_info{
 			  gpio_id = 2,
 			  name = "GPIO 02 <small>(SDA1, I2C)</small>",
 			  rg_enabled = true,
 			  cb_shown = true,
 			  set_type = Type,
-			  curr_status = Status
+			  curr_status = Status,
+			  custom_name = T
 			 };
 pin_info(4) ->
 	#pin_info{name = "5V <small>DC Power</small>"
   			};
 pin_info(5) ->
-	{Type, Status} = pin_status(3),
+	{Type, Status, T} = pin_status(3),
 	#pin_info{
 			  gpio_id = 3,
 			  name = "GPIO 03 <small>(SCL1, I2C)</small>",
 			  rg_enabled = true,
 			  cb_shown = true,
 			  set_type = Type,
-			  curr_status = Status
+			  curr_status = Status,
+			  custom_name = T
 			 };
 pin_info(6) ->
 	#pin_info{name = "<small>Ground</small>"
 			  };
 pin_info(7) ->
-	{Type, Status} = pin_status(4),
+	{Type, Status, T} = pin_status(4),
 	#pin_info{
 			  name = "GPIO 04<small>(GPIO_GCLK)</small>",
 			  gpio_id = 4,
 			  rg_enabled = true,
 			  cb_shown = true,
 			  set_type = Type,
-			  curr_status = Status
+			  curr_status = Status,
+			  custom_name = T
 			  };
 pin_info(8) ->
-	{Type, Status} = pin_status(14),
+	{Type, Status, T} = pin_status(14),
 	#pin_info{
 			  gpio_id = 14,
 			  name = "GPIO 14<small>TXD0</small>",
 			  rg_enabled = true,
 			  cb_shown = true,
 			  set_type = Type,
-			  curr_status = Status
+			  curr_status = Status,
+			  custom_name = T
 			  };
 pin_info(9) ->
 	#pin_info{name = "<small>Ground</small>"
 			 
 			 };
 pin_info(10) ->
-	{Type, Status} = pin_status(15),
+	{Type, Status, T} = pin_status(15),
 	#pin_info{name = "GPIO 15 <small>RXDO</small>",
 			  gpio_id = 15,
 			  rg_enabled = true,
 			  cb_shown = true,
 			  set_type = Type,
-			  curr_status = Status
+			  curr_status = Status, 
+			  custom_name = T
 			 };
 pin_info(11) ->
-	{Type, Status} = pin_status(17),
+	{Type, Status, T} = pin_status(17),
 	#pin_info{name = "GPIO 17 <small>GPIO_GEN0</small>",
 			  gpio_id = 17,
 			  rg_enabled = true,
 			  cb_shown = true,
 			  set_type = Type,
-			  curr_status = Status
+			  curr_status = Status, 
+			  custom_name = T
 			 };
 pin_info(12) ->
-	{Type, Status} = pin_status(18),
+	{Type, Status, T } = pin_status(18),
 	#pin_info{name = "GPIO 18 <small>GPIO_GEN1</small>",
 			  gpio_id = 18, 
 			  rg_enabled = true,
 			  cb_shown = true,
 			  set_type = Type,
-			  curr_status = Status
+			  curr_status = Status,
+			  custom_name = T
 			 };
 pin_info(13) ->
-	{Type, Status} = pin_status(27),
+	{Type, Status, T} = pin_status(27),
 	#pin_info{name ="GPIO 27 <small>GPIO GEN2</small>",
 			  gpio_id = 27,
 			  rg_enabled =true,
 			  cb_shown = true,
 			  set_type = Type,
-			  curr_status = Status
+			  curr_status = Status,
+			  custom_name =T
 			 };
 pin_info(14) ->
 	#pin_info{name = "<small>Ground</small>"
 			 
 			 };
 pin_info(15) ->
-	{Type, Status} = pin_status(22),
+	{Type, Status, T} = pin_status(22),
 	#pin_info{name = "GPIO 22 <small>GPIO GEN3</small>",
 			  gpio_id = 22, 
 			  rg_enabled = true,
 			  cb_shown = true,
 			  set_type = Type,
-			  curr_status = Status
+			  curr_status = Status,
+			  custom_name = T
 			 };
 pin_info(16) ->
-	{Type, Status} = pin_status(23),
+	{Type, Status, T} = pin_status(23),
 	#pin_info{name = "GPIO 23 <small>GPIO GEN4</small>",
 			  gpio_id = 23,
 			  rg_enabled = true,
 			  cb_shown = true,
 			  set_type = Type,
-			  curr_status = Status
+			  curr_status = Status,
+			  custom_name = T
 			 };
 pin_info(17) ->
 	#pin_info{
 			  name = "3.3V <small>DC Power</small>"
 			  };
 pin_info(18) ->
-	{Type, Status} = pin_status(24),
+	{Type, Status, T} = pin_status(24),
 	#pin_info{
 			  name = "GPIO 24 <small>GPIO GEN5</small>",
 			  gpio_id = 24,
 			  rg_enabled = true,
 			  cb_shown = true,
 			  set_type = Type,
-			  curr_status = Status
+			  curr_status = Status,
+			  custom_name = T
 			  };
 pin_info(19) ->
-	{Type, Status} = pin_status(10),
+	{Type, Status, T} = pin_status(10),
 	#pin_info{name = "GPIO 10 <smll>SPI_MOZI</small>",
 			  gpio_id = 10,
 			  rg_enabled = true,
 			  cb_shown = true,
 			  set_type = Type,
-			  curr_status = Status
+			  curr_status = Status,
+			  custom_name = T
 			 };
 pin_info(20) ->
 	#pin_info{name = "<small>Ground</small>"};
 pin_info(21) ->
-	{Type, Status} = pin_status(9),
+	{Type, Status, T} = pin_status(9),
 	#pin_info{
 			  name = "GPIO 09 <small>SPI_MISO</small>",
 			  gpio_id = 9,
 			  rg_enabled =true,
 			  cb_shown = true,
 			  set_type = Type,
-			  curr_status = Status
+			  curr_status = Status,
+			  custom_name = T
 			  };
 pin_info(22) ->
-	{Type, Status} = pin_status(25),
+	{Type, Status, T} = pin_status(25),
 	#pin_info{
 			  name = "GPIO 25 <small>GPIO_GEN6</small>",
 			  gpio_id = 25,
 			  rg_enabled = true,
 			  cb_shown = true,
 			  set_type = Type,
-			  curr_status = Status
+			  curr_status = Status,
+			  custom_name = T
 			 };
 pin_info(23) ->
-	{Type, Status} = pin_status(11),
+	{Type, Status, T} = pin_status(11),
 	#pin_info{name = "GPIO 11 <small>SPI_CLK</small>",
 			  gpio_id = 11,
 			  rg_enabled = true,
 			  cb_shown = true,
 			  set_type = Type,
-			  curr_status = Status
+			  curr_status = Status,
+			  custom_name = T
 			 };
 pin_info(24) ->
-	{Type, Status} = pin_status(8),
+	{Type, Status, T } = pin_status(8),
 	#pin_info{
 			  name = "GPIO 08 <small>SPI_CE0_N</small>",
 			  gpio_id = 8,
 			  rg_enabled = true,
 			  cb_shown = true,
 			  set_type = Type,
-			  curr_status = Status
+			  curr_status = Status, 
+			  custom_name = T
 			 };
 pin_info(25) ->
 	#pin_info{name = "<small>Ground</small>"};
 pin_info(26) ->
-	{Type, Status} = pin_status(7),
+	{Type, Status, T} = pin_status(7),
 	#pin_info{name = "GPIO 07 <small>SPI_CE1_N</small>",
 			  gpio_id = 7,
 			  rg_enabled = true,
 			  cb_shown = true,
 			  set_type = Type,
-			  curr_status = Status
+			  curr_status = Status,
+			  custom_name = T
 			 };
 pin_info(27) ->
 	#pin_info{name = "ID_SD <small>I2C ID EEPROM</small>"};
 pin_info(28) ->
 	#pin_info{name = "ID_SC <small>I2C ID EEPROM</small>"};
 pin_info(29) ->
-	{Type, Status} = pin_status(5),
+	{Type, Status, T} = pin_status(5),
 	#pin_info{name = "GPIO 05",
 			  gpio_id = 5, 
 			  rg_enabled = true,
 			  cb_shown = true,
 			  set_type = Type,
-			  curr_status = Status
+			  curr_status = Status,
+			  custom_name = T
 			 };
 pin_info(30) ->
 	#pin_info{name = "<small>Ground</small>"};
 pin_info(31) ->
-	{Type, Status} = pin_status(6),
+	{Type, Status, T} = pin_status(6),
 	#pin_info{name = "GPIO 06",
 			  gpio_id = 6,
 			  rg_enabled = true,
 			  cb_shown = true,
 			  set_type = Type,
-			  curr_status = Status
+			  curr_status = Status,
+			  custom_name = T
 			  
 			  };
 pin_info(32) ->
-	{Type, Status} = pin_status(12),
+	{Type, Status, T} = pin_status(12),
 	#pin_info{name = "GPIO 12",
 			  gpio_id = 12,
 			  rg_enabled = true,
 			  cb_shown = true,
 			  set_type = Type,
-			  curr_status = Status
+			  curr_status = Status,
+			  custom_name = T
 			  
 			  };
 pin_info(33) ->
-	{Type, Status} = pin_status(13),
+	{Type, Status, T} = pin_status(13),
 	#pin_info{name = "GPIO 13",
 			  gpio_id = 13,
 			  rg_enabled = true,
 			  cb_shown = true,
 				set_type = Type,
-			  curr_status = Status
+			  curr_status = Status,
+			  custom_name = T
 			  
 			  };			  			  
 pin_info(34) ->
 	#pin_info{name = "<small>Ground</small>"};	
 pin_info(35) ->
-	{Type, Status} = pin_status(19),
+	{Type, Status, T} = pin_status(19),
 	#pin_info{name = "GPIO 19",
 			  gpio_id = 19,
 			  rg_enabled = true,
 			  cb_shown = true,
 			  set_type = Type,
-			  curr_status = Status
+			  curr_status = Status,
+			  custom_name = T
 			  };
 pin_info(36) ->
-	{Type, Status} = pin_status(16),
+	{Type, Status, T} = pin_status(16),
 	#pin_info{name = "GPIO 16",
 			  gpio_id = 16,
 			  rg_enabled = true,
 			  cb_shown = true,set_type = Type,
-			  curr_status = Status
+			  curr_status = Status,
+			  custom_name = T
 			  };
 pin_info(37) ->
-	{Type, Status} = pin_status(26),
+	{Type, Status, T} = pin_status(26),
 	#pin_info{name = "GPIO 26",
 			  gpio_id = 26,
 			  rg_enabled = true,
 			  cb_shown = true,
 			  set_type = Type,
-			  curr_status = Status
+			  curr_status = Status,
+			  custom_name = T
 			  };
 pin_info(38) ->
-	{Type, Status} = pin_status(20),
+	{Type, Status,T } = pin_status(20),
 	#pin_info{name = "GPIO 20",
 			  gpio_id = 20,
 			  rg_enabled = true,
 			  cb_shown = true,
 			  set_type = Type,
-			  curr_status = Status
+			  curr_status = Status,
+			  custom_name = T
 			  };
 pin_info(39) ->
 	#pin_info{name = "<small>Ground</small>"};	
 pin_info(40) ->
-	{Type, Status} = pin_status(21),
+	{Type, Status, T} = pin_status(21),
 	#pin_info{name = "GPIO 21",
 			  gpio_id = 21,
 			  rg_enabled = true,
 			  cb_shown = true,
 			  set_type = Type,
-			  curr_status = Status
+			  curr_status = Status,
+			  custom_name = T
 			  };
 
 pin_info(_) ->
@@ -554,7 +578,8 @@ row(Pin) ->
 			  rg_enabled = RGEnabled,
 			  cb_shown = CBShown,
 			  set_type 		= Type,
-			  curr_status = Status
+			  curr_status = Status,
+			  custom_name= CN
 			 } =  
 		pin_info(Pin),
 	Style = case Pin of
@@ -635,6 +660,13 @@ row(Pin) ->
 		#tablecell{style = Style, 
 					
 					body = [
+							if RGEnabled ->  
+							  #inplace_textbox { id="txt" ++ integer_to_list(GPIOPin), tag="txt"++integer_to_list(GPIOPin), text=CN };
+							   true ->
+								   ""
+							end
+								 
+
 							
 							]
 				  }
@@ -643,13 +675,19 @@ row(Pin) ->
 
 pin_status(PinNum) ->
 	case catch gpio_proc:get_pin_status(PinNum) of
-		{N,V} ->
-			{N,V};
+		{N,V, T} ->
+			{N,V, T};
 		Exception ->
 			error_logger:warning_msg("~p ~p Shouldn't happen unless simulated : ~p",
 									 [?MODULE, ?LINE, Exception]),
-			{none, 0}
+			{none, 0, ""}
 	end.
+
+inplace_textbox_event(TxtBox, Value) ->
+	GPIOPin = list_to_integer(TxtBox -- "txt"),
+%% 	error_logger:info_msg("Value:~p", [Value]),
+	gpio_proc:set_custom_text(GPIOPin, Value),
+	Value.
 
 
 set_pin_status(PinNum, Status) ->

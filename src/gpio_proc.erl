@@ -13,7 +13,8 @@
 -export([init/1,
 		 set_type/2,
 		 set_status/2,
-		 save_cfg/0
+		 save_cfg/0,
+		 set_custom_text/2
 		]).
 
 -export([state/0,
@@ -36,7 +37,7 @@
 			  pin_num,
 			  type = none,
 			  status = ?GPIO_OFF,
-			  comet_pool_name
+			  custom_name = ""
 			  }).
 
 -record(state, {
@@ -47,6 +48,14 @@
 get_pin_status(Pin) ->
 	?MODULE ! {{get_pin_status, Pin}, Ref = make_ref(), self()},
 	receive 
+		{Ref, Reply} ->
+			Reply
+	after 5000 -> timeout
+	end.
+
+set_custom_text(Pin, Txt) ->
+	?MODULE ! {{set_custom_text, Pin, Txt}, Ref = make_ref(), self()},
+	receive
 		{Ref, Reply} ->
 			Reply
 	after 5000 -> timeout
@@ -127,12 +136,24 @@ process_msg(save_cfg, State = #state{cfg = Cfg}) ->
 	save_config(Cfg),
 	State;
 
+process_msg({{set_custom_text, PinNum, Txt}, Ref, From}, State = #state{ cfg = Cfg}) ->
+	NewCfg = case lists:keytake(PinNum, 2, Cfg) of
+		{value, Pin = #pin{}, OtherCfg} ->
+			From ! {Ref, ok},
+			[Pin#pin{ custom_name = Txt}|OtherCfg];
+		_ ->
+			From ! {Ref, error},
+			Cfg
+	end,
+	State#state{cfg = NewCfg};
+
 process_msg({{get_pin_status, PinNum}, Ref, From}, State = #state{cfg = Cfg}) ->
 	case lists:keysearch(PinNum, 2, Cfg) of
 		{value, #pin{status = Status,
-						  type = Type
+						  type = Type,
+					 custom_name = Txt
 						 }} ->
-			From ! {Ref, {Type, Status}};
+			From ! {Ref, {Type, Status, Txt}};
 		_ ->
 			From ! {Ref, invalid_pin}
 	end,
@@ -151,7 +172,7 @@ process_msg({{set_type, PinNum, Type}, Ref, From}, State = #state{cfg = Cfg} ) -
 					erase(PinNum),
 					gpio:stop(_OldPid),
 					%% Give a little time for the pin to stop before starting a new one.
-					receive 50 -> void end
+					receive after 50 -> void end
 			end,
 			case Type of
 				input ->
@@ -179,7 +200,7 @@ process_msg({{set_status, PinNum, Status}, Ref, From}, State = #state{cfg = Cfg}
 	case get(PinNum) of
 		Pid when is_pid(Pid) ->
 			case lists:keytake(PinNum, 2, Cfg) of
-				{value, Pin = #pin{type = Type = ?TYPE_OUTPUT}, RestCfg} ->
+				{value, Pin = #pin{type =  ?TYPE_OUTPUT}, RestCfg} ->
 %% 					send_to_web({pin_changed,PinNum, Status, Type}),
 					gpio:write(Pid, Status),
 					From ! {Ref, ok},

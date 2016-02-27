@@ -25,7 +25,7 @@ The configuration is saved between restarts of the PI; it is automatically saved
     sudo rm gpio.config
 
 # TODO
-- [ ] Determine if custom naming of the GPIO would be worthwhile; i.e. doorbell, red led, e.t.c.
+- [x] Custom naming of the GPIO ; i.e. doorbell, red led, e.t.c.
 
 
 # Screenshot/Demo
