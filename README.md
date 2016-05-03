@@ -15,7 +15,7 @@ Then clone the repo and make. The default `make` uses the inet as the webserver 
     make
     make run
 
-Then open up the browser to control the Pi. (to get your IP address on the Rasberry pi type `ifconfg| grep inet`)
+Then open up the browser to control the Pi. (to get your IP address on the Rasberry pi type `ifconfig| grep inet`)
 
     http://<IP-ADDRESS>:8000/
 
